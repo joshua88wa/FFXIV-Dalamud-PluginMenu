@@ -7,7 +7,7 @@ window and settings a single click away.
 The point is to skip the trip through `/xlplugins`, Installed Plugins, search, expand
 the entry, and then finally the button.
 
-<img src="images/preview.png" alt="The menu open, with the floating button behind it" width="368">
+<img src="images/screenshot.png" alt="The menu open, with the floating button behind it" width="368">
 
 ## Features
 

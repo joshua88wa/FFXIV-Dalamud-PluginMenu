@@ -1,7 +1,7 @@
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-$target = 'C:\Utilities\FFXIV\repos\FFXIV-Dalamud-PluginMenu\images\preview.png'
+$target = 'C:\Utilities\FFXIV\repos\FFXIV-Dalamud-PluginMenu\images\screenshot.png'
 $img = [System.Windows.Forms.Clipboard]::GetImage()
 
 if ($null -eq $img) {
