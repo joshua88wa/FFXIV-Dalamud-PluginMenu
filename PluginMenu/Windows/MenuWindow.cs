@@ -200,11 +200,36 @@ public sealed class MenuWindow : Window
 
         ImGui.Separator();
 
+        // Dalamud's own windows, so the menu covers everything you would have opened
+        // /xlplugins for rather than most of it.
+        if (ImGui.SmallButton("Plugin Installer"))
+        {
+            Service.Interface.OpenPluginInstallerTo();
+            ImGui.CloseCurrentPopup();
+        }
+
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Dalamud's plugin installer. Same as /xlplugins.");
+
+        ImGui.SameLine();
+        if (ImGui.SmallButton("Dalamud Settings"))
+        {
+            Service.Interface.OpenDalamudSettingsTo();
+            ImGui.CloseCurrentPopup();
+        }
+
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Dalamud's own settings. Same as /xlsettings.");
+
+        ImGui.SameLine();
         if (ImGui.SmallButton("Settings"))
         {
             this.OpenConfig?.Invoke();
             ImGui.CloseCurrentPopup();
         }
+
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Settings for this menu.");
 
         ImGui.SameLine();
         ImGui.TextDisabled($"{rows.Count} shown");

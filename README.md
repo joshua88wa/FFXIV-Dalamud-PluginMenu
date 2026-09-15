@@ -20,6 +20,8 @@ the entry, and then finally the button.
 - A search box, focused as soon as the menu opens.
 - The list scrolls, so it does not matter how many plugins you have.
 - Any plugin can be hidden from the menu and brought back later.
+- Buttons at the bottom for Dalamud's own plugin installer and settings windows, so
+  the menu covers everything you would have typed `/xlplugins` for.
 - Plugin names are tidied for display, so a trailing version number or a
   `(testing)` marker does not take up half the row.
 

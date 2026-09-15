@@ -2,7 +2,7 @@
   "Name": "Plugin Menu",
   "InternalName": "PluginMenu",
   "Author": "joshua88wa",
-  "AssemblyVersion": "0.1.0.0",
+  "AssemblyVersion": "0.1.1.0",
   "Punchline": "A one click menu for your installed plugins.",
   "Description": "Adds a small floating button that opens a searchable, scrollable list of every installed and enabled plugin, each with its Open and Settings windows one click away. Plugins can be hidden from the list and brought back later.",
   "ApplicableVersion": "any",
