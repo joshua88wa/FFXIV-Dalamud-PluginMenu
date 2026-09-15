@@ -1,3 +1,11 @@
+After making this plugin I stumbled upon an almost identical plugin to this one made by an actual programmer, I recommend you check it out.
+<img src="https://raw.githubusercontent.com/BoxuChan/PluginList/refs/heads/main/PluginList/assets/icon.png" width="18"> [PluginList](https://github.com/BoxuChan/PluginList) by [BoxuChan](https://github.com/BoxuChan)
+   ```
+   https://raw.githubusercontent.com/BoxuChan/Hako/main/repo.json
+   ```
+
+I will maintain this plugin since it a few features that Boxu's doesn't have (yet).
+
 # Plugin Menu
 
 A Dalamud plugin for FINAL FANTASY XIV. It puts a small floating button on screen
