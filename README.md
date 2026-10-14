@@ -4,7 +4,7 @@ After making this plugin I stumbled upon an almost identical plugin to this one 
    https://raw.githubusercontent.com/BoxuChan/Hako/main/repo.json
    ```
 
-I will maintain this plugin since it a few features that Boxu's doesn't have (yet).
+I will maintain this plugin since it has a few features that Boxu's doesn't have (yet).
 
 # Plugin Menu
 
