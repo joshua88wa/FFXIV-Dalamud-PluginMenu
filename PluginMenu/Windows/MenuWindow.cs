@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 
 namespace PluginMenu.Windows;
@@ -167,8 +168,17 @@ public sealed class MenuWindow : Window
         if (!ImGui.BeginPopup(PopupId))
             return;
 
-        var width = this.config.MenuWidth * scale;
-        var height = this.config.MenuHeight * scale;
+        // Dalamud's global UI scale multiplies every font and style value, so a width
+        // kept in raw pixels means something different on every machine. At 1.5 the
+        // footer outgrew the list and the popup widened around it, leaving the rows
+        // sitting in a corner of their own window.
+        var uiScale = ImGuiHelpers.GlobalScale;
+        var height = this.config.MenuHeight * scale * uiScale;
+        var rows = this.catalog.Visible(this.filter).ToList();
+
+        // The popup auto-sizes to its widest element, so the list has to be at least as
+        // wide as the footer or the difference shows up as dead space beside it.
+        var width = Math.Max(this.config.MenuWidth * scale * uiScale, FooterWidth(rows.Count));
 
         if (this.config.ShowSearch)
         {
@@ -182,8 +192,6 @@ public sealed class MenuWindow : Window
             ImGui.InputTextWithHint("##pm_search", "Search", ref this.filter, 128);
             ImGui.Separator();
         }
-
-        var rows = this.catalog.Visible(this.filter).ToList();
 
         if (rows.Count == 0)
         {
@@ -235,6 +243,22 @@ public sealed class MenuWindow : Window
         ImGui.TextDisabled($"{rows.Count} shown");
 
         ImGui.EndPopup();
+    }
+
+    // Measured rather than guessed, because these are text buttons and every value in
+    // here grows with the global UI scale.
+    private static float FooterWidth(int shown)
+    {
+        var style = ImGui.GetStyle();
+        var width = 0f;
+
+        foreach (var label in new[] { "Plugin Installer", "Dalamud Settings", "Settings" })
+            width += ImGui.CalcTextSize(label).X + (style.FramePadding.X * 2f);
+
+        width += ImGui.CalcTextSize($"{shown} shown").X;
+        width += style.ItemSpacing.X * 3f;
+
+        return width;
     }
 
     private void DrawRows(List<PluginEntry> rows, float scale)
