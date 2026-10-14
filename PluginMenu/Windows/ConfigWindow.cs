@@ -15,6 +15,13 @@ public sealed class ConfigWindow : Window
     private readonly IconCache icons;
 
     private string hiddenFilter = string.Empty;
+    private bool menuTabActive;
+
+    // Set by the plugin. The preview follows the Menu tab, and centring belongs to the
+    // menu window because only it knows where the button is.
+    public PreviewWindow? Preview { get; set; }
+
+    public Action? CenterButton { get; set; }
 
     public ConfigWindow(Configuration config, PluginCatalog catalog, IconCache icons)
         : base("Plugin Menu - Settings##PluginMenuConfig")
@@ -28,9 +35,18 @@ public sealed class ConfigWindow : Window
 
     public override void OnOpen() => this.catalog.Refresh(true);
 
+    // Draw does not run while the window is closed, so the preview would otherwise be
+    // left on screen with nothing driving it.
+    public override void OnClose()
+    {
+        if (this.Preview != null)
+            this.Preview.IsOpen = false;
+    }
+
     public override void Draw()
     {
         var dirty = false;
+        this.menuTabActive = false;
 
         if (ImGui.BeginTabBar("##pm_tabs"))
         {
@@ -60,6 +76,11 @@ public sealed class ConfigWindow : Window
 
             ImGui.EndTabBar();
         }
+
+        // The preview is tied to the Menu tab rather than being a setting of its own,
+        // so it is there exactly when the sizes are being changed and never otherwise.
+        if (this.Preview != null)
+            this.Preview.IsOpen = this.menuTabActive;
 
         if (dirty)
             this.config.Save();
@@ -104,9 +125,17 @@ public sealed class ConfigWindow : Window
         }
 
         ImGui.Separator();
+
+        if (ImGui.Button("Center the button"))
+            this.CenterButton?.Invoke();
+
+        HelpMarker("Use this if the button ends up off screen, after a resolution change for example. The command /pmenu center does the same thing.");
+
+        ImGui.Separator();
         TextHint("Shift and drag moves the button, from anywhere on it.");
         TextHint("/pmenu opens the menu.");
         TextHint("/pmenu config opens this window.");
+        TextHint("/pmenu center brings the button back on screen.");
 
         return dirty;
     }
@@ -114,6 +143,10 @@ public sealed class ConfigWindow : Window
     private bool DrawMenuTab()
     {
         var dirty = false;
+        this.menuTabActive = true;
+
+        TextHint("The menu is shown in a preview window while this tab is open, so you can see each change as you make it.");
+        ImGui.Separator();
 
         var width = this.config.MenuWidth;
         ImGui.SetNextItemWidth(160);
