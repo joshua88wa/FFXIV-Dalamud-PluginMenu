@@ -24,6 +24,7 @@ public sealed class MenuWindow : Window
     // The rectangle the button occupied last frame, used to decide click-through.
     private Vector2 buttonMin;
     private Vector2 buttonMax;
+    private bool centerRequested;
 
     public MenuWindow(Configuration config, PluginCatalog catalog, IconCache icons)
         : base("Plugin Menu##PluginMenuButton")
@@ -45,6 +46,10 @@ public sealed class MenuWindow : Window
         this.openRequested = true;
         this.IsOpen = true;
     }
+
+    // For when the button ends up off screen, after a resolution change or a careless
+    // drag. Same idea as /npl center in Nearby Player List.
+    public void RequestCenter() => this.centerRequested = true;
 
     public override void PreDraw()
     {
@@ -72,6 +77,15 @@ public sealed class MenuWindow : Window
         // stay alive because the popup belongs to it.
         if (!this.config.ShowButton)
             this.Flags |= ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoMove;
+
+        if (!this.centerRequested)
+            return;
+
+        // Positioned by its middle, so the button lands in the centre of the screen
+        // whichever way it has been dragged.
+        var viewport = ImGui.GetMainViewport();
+        ImGui.SetNextWindowPos(viewport.Pos + (viewport.Size * 0.5f), ImGuiCond.Always, new Vector2(0.5f, 0.5f));
+        this.centerRequested = false;
     }
 
     // Measured from the previous frame, because the flags for this frame have to be
@@ -168,6 +182,16 @@ public sealed class MenuWindow : Window
         if (!ImGui.BeginPopup(PopupId))
             return;
 
+        this.DrawContents(scale);
+
+        ImGui.EndPopup();
+    }
+
+    // The menu itself, with no window of its own, so the settings window can draw a
+    // live preview of it. CloseCurrentPopup is a no-op outside a popup, so the same
+    // code works in both places.
+    public void DrawContents(float scale)
+    {
         // Dalamud's global UI scale multiplies every font and style value, so a width
         // kept in raw pixels means something different on every machine. At 1.5 the
         // footer outgrew the list and the popup widened around it, leaving the rows
@@ -241,8 +265,6 @@ public sealed class MenuWindow : Window
 
         ImGui.SameLine();
         ImGui.TextDisabled($"{rows.Count} shown");
-
-        ImGui.EndPopup();
     }
 
     // Measured rather than guessed, because these are text buttons and every value in

@@ -15,6 +15,7 @@ public sealed class Plugin : IDalamudPlugin
     private readonly IconCache icons;
     private readonly MenuWindow menuWindow;
     private readonly ConfigWindow configWindow;
+    private readonly PreviewWindow previewWindow;
 
     public Plugin(IDalamudPluginInterface pluginInterface)
     {
@@ -28,14 +29,19 @@ public sealed class Plugin : IDalamudPlugin
 
         this.menuWindow = new MenuWindow(this.config, this.catalog, this.icons) { IsOpen = true };
         this.configWindow = new ConfigWindow(this.config, this.catalog, this.icons);
+        this.previewWindow = new PreviewWindow(this.menuWindow, this.config);
+
         this.menuWindow.OpenConfig = () => this.configWindow.IsOpen = true;
+        this.configWindow.Preview = this.previewWindow;
+        this.configWindow.CenterButton = () => this.menuWindow.RequestCenter();
 
         this.windowSystem.AddWindow(this.menuWindow);
         this.windowSystem.AddWindow(this.configWindow);
+        this.windowSystem.AddWindow(this.previewWindow);
 
         Service.Commands.AddHandler(CommandName, new CommandInfo(this.OnCommand)
         {
-            HelpMessage = "Open the plugin menu. /pmenu config opens settings, /pmenu button toggles the floating button.",
+            HelpMessage = "Open the plugin menu. /pmenu config opens settings, /pmenu center brings the button back on screen, /pmenu button toggles it.",
         });
 
         pluginInterface.UiBuilder.Draw += this.Draw;
@@ -75,6 +81,10 @@ public sealed class Plugin : IDalamudPlugin
             case "button":
                 this.config.ShowButton = !this.config.ShowButton;
                 this.config.Save();
+                break;
+            case "center":
+            case "centre":
+                this.menuWindow.RequestCenter();
                 break;
             default:
                 this.OpenMenu();
