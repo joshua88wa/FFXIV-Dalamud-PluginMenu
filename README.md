@@ -28,6 +28,9 @@ the entry, and then finally the button.
 - A search box, focused as soon as the menu opens.
 - The list scrolls, so it does not matter how many plugins you have.
 - Any plugin can be hidden from the menu and brought back later.
+- A live preview of the menu while you are changing its size, so you are not opening
+  and closing it to see what you did.
+- A center command, for when the button ends up off screen.
 - Buttons at the bottom for Dalamud's own plugin installer and settings windows, so
   the menu covers everything you would have typed `/xlplugins` for.
 - Plugin names are tidied for display, so a trailing version number or a
@@ -57,6 +60,7 @@ Other plugins in the same repository are listed at
 
 - `/pmenu` opens the menu
 - `/pmenu config` opens the settings window
+- `/pmenu center` brings the button back on screen
 - `/pmenu button` shows or hides the floating button
 
 ## Settings
@@ -69,11 +73,17 @@ Other plugins in the same repository are listed at
   taking clicks anywhere except on the button itself, so it can sit on top of the HUD
   without eating anything.
 - Scale
+- Center the button, for when it ends up off screen
 
 ### Menu
 
+While this tab is open the menu is shown in a preview window, so size changes are
+visible as you make them. It is the real menu rather than a mock up, so clicking a row
+in it opens that plugin.
+
 - Menu width and height. Height is the point at which the list starts to scroll; a
-  short list is still drawn short.
+  short list is still drawn short. Both are scaled by Dalamud's global UI scale, so the
+  same number means the same apparent size on any setup.
 - Show the search box
 - Show plugin icons
 - Tidy up plugin names
